@@ -8,7 +8,7 @@ router.get("/",async(req,res)=>{
         const page=req.query.page||1;
         const pagesize=req.query.pagesize||10;
         const skip=(page-1)*pagesize;
-        const users =await User.find().skip(skip).limit().lean().exec();
+        const users =await User.find().skip(skip).limit(pagesize).lean().exec();
         const totalpages =Math.ceil(
             (await User .find().countDocuments())/pagesize
         );
@@ -25,18 +25,8 @@ router.post("/",async(req,res)=>{
             from: '"ABC admin" <admin@abc.com>', // sender address
             to: user.email, // list of receivers
             subject: "Your registration is successfully created", // Subject line
-            text: "Hello sir/madam your registration is successfull", // plain text body
-            //   html: "<b>Hello sir/madam your product is successfully created</b>", // html body
-            // alternatives: [
-            //   {
-            //     contentType: "text/html",
-            //     path: path.join(__dirname, "../mailers/product-created.mail.html"),
-            //   },
-            //   {
-            //     filename: "product.txt",
-            //     path: path.join(__dirname, "../mailers/product-details.txt"),
-            //   },
-            // ],
+            text: `Welcome ${user.first_name  }  ${user.last_name} your registration is successfull`, // plain text body
+            
           });
         return res.status(201).send({message:"Thanx for registration"});
     }
